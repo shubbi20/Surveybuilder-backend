@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose, { ConnectOptions } from "mongoose";
 import bodyParser from "body-parser";
-
+import router from "./routes/survey";
 import AuthRouter from "./routes/auth";
 
 const port = 3009;
@@ -16,6 +16,7 @@ const app = express();
 
 // mongodb+srv://shubham0.4cnas.mongodb.net/Shubham0
 // mongodb://localhost:27017/surveyRocketo
+
 mongoose.connect(
   `mongodb+srv://${DB_USER}:${DB_PASSWORD}@shubham0.4cnas.mongodb.net/${DB_NAME}`,
   { useNewUrlParser: true } as ConnectOptions,
@@ -47,7 +48,8 @@ app.get("/", (_req, res) => {
   res.end("Hello World!");
 });
 
-app.use("/api/auth", AuthRouter);
+app.use("/", AuthRouter);
+app.use("/", router);
 
 app.listen(port, () => {
   console.log("hello");

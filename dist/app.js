@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const survey_1 = __importDefault(require("./routes/survey"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const port = 3009;
 const DB_USER = process.env.DB_USER;
@@ -41,7 +42,8 @@ app.use(body_parser_1.default.json());
 app.get("/", (_req, res) => {
     res.end("Hello World!");
 });
-app.use("/api/auth", auth_1.default);
+app.use("/", auth_1.default);
+app.use("/", survey_1.default);
 app.listen(port, () => {
     console.log("hello");
 });

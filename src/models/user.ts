@@ -14,6 +14,6 @@ const userSchema = new Schema({
   mobile: { type: Number, required: true },
 });
 
-const model = mongoose.model("User", userSchema);
+const userModel = mongoose.model("User", userSchema);
 
-export default model;
+export default userModel;

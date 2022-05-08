@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Auth from "../../models/auth.js";
 import httpError from "../../util/functions/httpError";
+import authModel from "../../models/auth.js";
 
 const JWT_KEY: any = process.env.JWT_KEY;
 
@@ -14,7 +15,7 @@ const login = async (req: any, res: any) => {
     const { username, password } = req.body;
 
     // check for user exists
-    const existingUser = await Auth.findOne({ username });
+    const existingUser = await authModel.findOne({ username });
 
     // user does not exists
     if (!existingUser) {

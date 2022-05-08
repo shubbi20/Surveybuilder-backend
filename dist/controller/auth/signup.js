@@ -7,9 +7,9 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const auth_1 = __importDefault(require("../../models/auth"));
-const user_1 = __importDefault(require("../../models/user"));
 const httpError_js_1 = __importDefault(require("../../util/functions/httpError.js"));
+const user_1 = __importDefault(require("../../models/user"));
+const auth_1 = __importDefault(require("../../models/auth"));
 const JWT_KEY = process.env.JWT_KEY;
 const saltRounds = 12;
 const signup = async (req, res) => {

@@ -9,5 +9,5 @@ const authSchema = new Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true, minlength: 6 },
 });
-const model = mongoose_1.default.model("Auth", authSchema);
-exports.default = model;
+const authModel = mongoose_1.default.model("Auth", authSchema);
+exports.default = authModel;

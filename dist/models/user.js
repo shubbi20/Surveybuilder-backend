@@ -12,5 +12,5 @@ const userSchema = new Schema({
     age: { type: Number, required: true },
     mobile: { type: Number, required: true },
 });
-const model = mongoose_1.default.model("User", userSchema);
-exports.default = model;
+const userModel = mongoose_1.default.model("User", userSchema);
+exports.default = userModel;

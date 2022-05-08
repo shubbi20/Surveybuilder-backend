@@ -6,9 +6,10 @@ import httpError from "../util/functions/httpError";
 
 const key: any = process.env.JWT_KEY;
 
-const validator = async (req: any, res: any, next: any) => {
+const tokenValidator = async (req: any, res: any, next: any) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.get("Authorization").split(" ")[2];
+    console.log("token ", token);
     if (!token) {
       throw httpError("Invalid token");
     }
@@ -17,6 +18,7 @@ const validator = async (req: any, res: any, next: any) => {
       throw httpError("Invalid token");
     }
     req.decodedToken = decodedToken;
+    console.log("hey", req.decodedToken);
     next();
   } catch (err: any) {
     if (err.error) {
@@ -26,4 +28,4 @@ const validator = async (req: any, res: any, next: any) => {
   }
 };
 
-export default validator;
+export default tokenValidator;

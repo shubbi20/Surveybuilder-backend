@@ -4,8 +4,9 @@ dotenv.config();
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Auth from "../../models/auth";
-import User from "../../models/user";
 import httpError from "../../util/functions/httpError.js";
+import userModel from "../../models/user";
+import authModel from "../../models/auth";
 
 const JWT_KEY: any = process.env.JWT_KEY;
 
@@ -16,7 +17,7 @@ const signup = async (req: any, res: any) => {
     const { name, username, email, age, mobile, password } = req.body;
 
     //   check for existing user
-    const existingUser = await Auth.findOne({ username });
+    const existingUser = await authModel.findOne({ username });
 
     //   if user exists
     if (existingUser) {
@@ -27,13 +28,13 @@ const signup = async (req: any, res: any) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // create Auth
-    const createdAuth = new Auth({
+    const createdAuth = new authModel({
       username,
       password: hashedPassword,
     });
 
     // create new User
-    const createdUser = new User({
+    const createdUser = new userModel({
       name,
       username,
       email,

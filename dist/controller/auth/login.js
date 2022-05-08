@@ -7,8 +7,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const auth_js_1 = __importDefault(require("../../models/auth.js"));
 const httpError_1 = __importDefault(require("../../util/functions/httpError"));
+const auth_js_1 = __importDefault(require("../../models/auth.js"));
 const JWT_KEY = process.env.JWT_KEY;
 const login = async (req, res) => {
     try {
