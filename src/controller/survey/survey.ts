@@ -85,8 +85,33 @@ class SurveyController {
     }
   };
 
-  getSurvey = async (req: Request, res: Response, next: NextFunction) => {
+  getSurvey = async (req: any, res: Response, next: NextFunction) => {
     try {
+      const UserId: string = req.decodedToken.username;
+      const user = await userModel.find({ username: UserId });
+      if (isNull(user)) {
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .send("user with specified id doesn't exist");
+        return;
+      }
+      const surveyId = req.params.surveyId;
+      const survey = await surveyModel.findById(surveyId);
+      if (isNull(survey)) {
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .send(`survey with this ${surveyId} does not exist`);
+        return;
+      }
+
+      const Data = [
+        {
+          survey: survey,
+          msg: "Success",
+        },
+      ];
+      res.status(StatusCodes.OK).send(Data);
+      return;
     } catch (error) {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -95,8 +120,23 @@ class SurveyController {
     }
   };
 
-  getAllSurvey = async (req: Request, res: Response, next: NextFunction) => {
+  getAllSurvey = async (req: any, res: Response, next: NextFunction) => {
     try {
+      const UserId: string = req.decodedToken.username;
+      const user = await userModel.find({ username: UserId });
+      if (isNull(user)) {
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .send("user with specified id doesn't exist");
+        return;
+      }
+      const surveyList = await surveyModel.find();
+      if (isNull(surveyList)) {
+        res.status(StatusCodes.BAD_REQUEST).send("model is not working");
+        return;
+      }
+      res.status(StatusCodes.OK).send(surveyList);
+      return;
     } catch (error) {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)

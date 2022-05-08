@@ -84,6 +84,30 @@ class SurveyController {
         };
         this.getSurvey = async (req, res, next) => {
             try {
+                const UserId = req.decodedToken.username;
+                const user = await user_1.default.find({ username: UserId });
+                if ((0, lodash_1.isNull)(user)) {
+                    res
+                        .status(http_status_codes_1.StatusCodes.NOT_FOUND)
+                        .send("user with specified id doesn't exist");
+                    return;
+                }
+                const surveyId = req.params.surveyId;
+                const survey = await survey_1.default.findById(surveyId);
+                if ((0, lodash_1.isNull)(survey)) {
+                    res
+                        .status(http_status_codes_1.StatusCodes.NOT_FOUND)
+                        .send(`survey with this ${surveyId} does not exist`);
+                    return;
+                }
+                const Data = [
+                    {
+                        survey: survey,
+                        msg: "Success",
+                    },
+                ];
+                res.status(http_status_codes_1.StatusCodes.OK).send(Data);
+                return;
             }
             catch (error) {
                 res
@@ -94,6 +118,21 @@ class SurveyController {
         };
         this.getAllSurvey = async (req, res, next) => {
             try {
+                const UserId = req.decodedToken.username;
+                const user = await user_1.default.find({ username: UserId });
+                if ((0, lodash_1.isNull)(user)) {
+                    res
+                        .status(http_status_codes_1.StatusCodes.NOT_FOUND)
+                        .send("user with specified id doesn't exist");
+                    return;
+                }
+                const surveyList = await survey_1.default.find();
+                if ((0, lodash_1.isNull)(surveyList)) {
+                    res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).send("model is not working");
+                    return;
+                }
+                res.status(http_status_codes_1.StatusCodes.OK).send(surveyList);
+                return;
             }
             catch (error) {
                 res

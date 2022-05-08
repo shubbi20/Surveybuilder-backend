@@ -7,7 +7,7 @@ import tokenValidator from "../middleware/decodeToken";
 const survey = new SurveyController();
 
 router.post("/survey/:userId", tokenValidator, survey.createSurvey);
-router.get("/getSurvey", survey.getSurvey);
-router.get("/getAllSurveys", survey.getAllSurvey);
+router.get("/getSurvey/:surveyId", tokenValidator, survey.getSurvey);
+router.get("/getAllSurveys", tokenValidator, survey.getAllSurvey);
 
 export default router;
