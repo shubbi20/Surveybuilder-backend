@@ -8,7 +8,7 @@ const router = express_1.default.Router();
 const survey_1 = __importDefault(require("../controller/survey/survey"));
 const decodeToken_1 = __importDefault(require("../middleware/decodeToken"));
 const survey = new survey_1.default();
-router.post("/survey/:userId", decodeToken_1.default, survey.createSurvey);
+router.post("/survey", decodeToken_1.default, survey.createSurvey);
 router.get("/getSurvey/:surveyId", decodeToken_1.default, survey.getSurvey);
 router.get("/getAllSurveys", decodeToken_1.default, survey.getAllSurvey);
 exports.default = router;
