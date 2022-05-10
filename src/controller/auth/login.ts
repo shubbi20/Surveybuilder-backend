@@ -51,9 +51,9 @@ const login = async (req: any, res: any) => {
   } catch (err: any) {
     console.log(err);
     if (err.error) {
-      return res.send(err);
+      return res.status(422).send(err);
     }
-    res.send(httpError("Login failed"));
+    res.statu(422).send(httpError("Login failed"));
   }
 };
 

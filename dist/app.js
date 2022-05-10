@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const survey_1 = __importDefault(require("./routes/survey"));
@@ -36,6 +37,7 @@ mongoose_1.default.connect(`mongodb+srv://${DB_USER}:${DB_PASSWORD}@shubham0.4cn
 //     }
 //   }
 // );
+app.use((0, cors_1.default)());
 // bodyparser
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(body_parser_1.default.json());

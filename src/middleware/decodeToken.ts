@@ -8,6 +8,7 @@ const key: any = process.env.JWT_KEY;
 
 const tokenValidator = async (req: any, res: any, next: any) => {
   try {
+    // console.log(req.get("Authorization").split(" "));
     const token = req.get("Authorization").split(" ")[1];
     console.log("token ", token);
     if (!token) {

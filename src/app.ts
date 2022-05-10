@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import mongoose, { ConnectOptions } from "mongoose";
 import bodyParser from "body-parser";
 import router from "./routes/survey";
@@ -39,6 +40,8 @@ mongoose.connect(
 //     }
 //   }
 // );
+
+app.use(cors());
 
 // bodyparser
 app.use(bodyParser.urlencoded({ extended: true }));

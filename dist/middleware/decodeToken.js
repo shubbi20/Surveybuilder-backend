@@ -10,6 +10,7 @@ const httpError_1 = __importDefault(require("../util/functions/httpError"));
 const key = process.env.JWT_KEY;
 const tokenValidator = async (req, res, next) => {
     try {
+        // console.log(req.get("Authorization").split(" "));
         const token = req.get("Authorization").split(" ")[1];
         console.log("token ", token);
         if (!token) {
