@@ -33,7 +33,7 @@ const login = async (req, res) => {
         // generate token
         const token = jsonwebtoken_1.default.sign({
             username: existingUser.username,
-        }, JWT_KEY, { expiresIn: "1h" });
+        }, JWT_KEY, { expiresIn: "3h" });
         // send response
         res.send({
             username: existingUser.username,

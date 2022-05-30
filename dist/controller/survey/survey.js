@@ -8,6 +8,7 @@ const http_status_codes_1 = require("http-status-codes");
 const user_1 = __importDefault(require("../../models/user"));
 const joi_1 = __importDefault(require("joi"));
 const survey_1 = __importDefault(require("../../models/survey"));
+const attemptSurvey_1 = __importDefault(require("../../models/attemptSurvey"));
 class SurveyController {
     constructor() {
         this.createSurvey = async (req, res, next) => {
@@ -100,12 +101,7 @@ class SurveyController {
                         .send(`survey with this ${surveyId} does not exist`);
                     return;
                 }
-                const Data = [
-                    {
-                        survey: survey,
-                        msg: "Success",
-                    },
-                ];
+                const Data = survey;
                 res.status(http_status_codes_1.StatusCodes.OK).send(Data);
                 return;
             }
@@ -132,6 +128,61 @@ class SurveyController {
                     return;
                 }
                 res.status(http_status_codes_1.StatusCodes.OK).send(surveyList);
+                return;
+            }
+            catch (error) {
+                res
+                    .status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR)
+                    .send(error.message);
+                return;
+            }
+        };
+        this.attemptSurvey = async (req, res, next) => {
+            try {
+                const UserId = req.decodedToken.username;
+                const user = await user_1.default.find({ username: UserId });
+                if ((0, lodash_1.isNull)(user)) {
+                    res
+                        .status(http_status_codes_1.StatusCodes.NOT_FOUND)
+                        .send("user with specified id doesn't exist");
+                    return;
+                }
+                /**
+                 * validation part
+                 */
+                const schema = joi_1.default.object()
+                    .options({ abortEarly: false })
+                    .keys({
+                    surveyId: joi_1.default.string().required(),
+                    surveyName: joi_1.default.string().required(),
+                    surveyCreator: joi_1.default.string().required(),
+                    userAttempted: joi_1.default.string().required(),
+                    surveyResponse: joi_1.default.array().required(),
+                })
+                    .unknown();
+                const result = schema.validate(req.body);
+                if (result.error) {
+                    res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).send(result.error);
+                    return;
+                }
+                const date = new Date();
+                const d = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                const surveyAttempted = new attemptSurvey_1.default({
+                    surveyId: req.body.surveyId,
+                    surveyName: req.body.surveyName,
+                    surveyCreator: req.body.surveyCreator,
+                    userAttempted: req.body.userAttempted,
+                    surveyQuestion: req.body.surveyResponse,
+                    date: d,
+                });
+                const surveySaved = await surveyAttempted.save();
+                const Data = [
+                    {
+                        _id: surveySaved._id,
+                        msg: "your newly survey is created",
+                    },
+                ];
+                res.status(http_status_codes_1.StatusCodes.CREATED).send(Data);
                 return;
             }
             catch (error) {

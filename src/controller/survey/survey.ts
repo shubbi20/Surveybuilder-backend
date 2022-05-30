@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import userModel from "../../models/user";
 import Joi from "joi";
 import surveyModel from "../../models/survey";
+import surveyAttemptModel from "../../models/attemptSurvey";
 
 class SurveyController {
   createSurvey = async (req: any, res: Response, next: NextFunction) => {
@@ -104,12 +105,8 @@ class SurveyController {
         return;
       }
 
-      const Data = [
-        {
-          survey: survey,
-          msg: "Success",
-        },
-      ];
+      const Data = survey;
+
       res.status(StatusCodes.OK).send(Data);
       return;
     } catch (error) {
@@ -136,6 +133,67 @@ class SurveyController {
         return;
       }
       res.status(StatusCodes.OK).send(surveyList);
+      return;
+    } catch (error) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .send((error as Error).message);
+      return;
+    }
+  };
+
+  attemptSurvey = async (req: any, res: Response, next: NextFunction) => {
+    try {
+      const UserId: string = req.decodedToken.username;
+      const user = await userModel.find({ username: UserId });
+      if (isNull(user)) {
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .send("user with specified id doesn't exist");
+        return;
+      }
+      /**
+       * validation part
+       */
+      const schema = Joi.object()
+        .options({ abortEarly: false })
+        .keys({
+          surveyId: Joi.string().required(),
+          surveyName: Joi.string().required(),
+          surveyCreator: Joi.string().required(),
+          userAttempted: Joi.string().required(),
+          surveyResponse: Joi.array().required(),
+        })
+        .unknown();
+
+      const result = schema.validate(req.body);
+      if (result.error) {
+        res.status(StatusCodes.BAD_REQUEST).send(result.error);
+        return;
+      }
+
+      const date = new Date();
+      const d = `${date.getDate()}/${
+        date.getMonth() + 1
+      }/${date.getFullYear()}`;
+
+      const surveyAttempted = new surveyAttemptModel({
+        surveyId: req.body.surveyId,
+        surveyName: req.body.surveyName,
+        surveyCreator: req.body.surveyCreator,
+        userAttempted: req.body.userAttempted,
+        surveyQuestion: req.body.surveyResponse,
+        date: d,
+      });
+      const surveySaved = await surveyAttempted.save();
+
+      const Data = [
+        {
+          _id: surveySaved._id,
+          msg: "your newly survey is created",
+        },
+      ];
+      res.status(StatusCodes.CREATED).send(Data);
       return;
     } catch (error) {
       res

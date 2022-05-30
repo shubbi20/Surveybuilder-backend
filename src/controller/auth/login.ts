@@ -40,7 +40,7 @@ const login = async (req: any, res: any) => {
         username: existingUser.username,
       },
       JWT_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "3h" }
     );
 
     // send response
