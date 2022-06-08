@@ -12,4 +12,5 @@ router.post("/survey", decodeToken_1.default, survey.createSurvey);
 router.get("/getSurvey/:surveyId", decodeToken_1.default, survey.getSurvey);
 router.get("/getAllSurveys", decodeToken_1.default, survey.getAllSurvey);
 router.post("/attemptSurvey", decodeToken_1.default, survey.attemptSurvey);
+router.get("/getSurveys", decodeToken_1.default, survey.getSurveyForAttempt);
 exports.default = router;

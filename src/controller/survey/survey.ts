@@ -202,6 +202,106 @@ class SurveyController {
       return;
     }
   };
+
+  getSurveyForAttempt = async (req: any, res: Response, next: NextFunction) => {
+    try {
+      const UserId: string = req.decodedToken.username;
+      const user = await userModel.find({ username: UserId });
+      if (isNull(user)) {
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .send("user with specified id doesn't exist");
+        return;
+      }
+      const surveyList = await surveyModel
+        .aggregate()
+        .match({
+          $expr: {
+            $ne: ["$userName", UserId],
+          },
+        })
+        .lookup({
+          from: "surveyattempts",
+          let: {
+            user: UserId,
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$$user", "$userAttempted"],
+                },
+              },
+            },
+            {
+              $addFields: {
+                suv: "$surveyName",
+              },
+            },
+            {
+              $project: {
+                surveyName: 1,
+                userAttempted: 1,
+                suv: 1,
+              },
+            },
+          ],
+
+          as: "result",
+        })
+        .unwind({
+          path: "$result",
+          preserveNullAndEmptyArrays: true,
+        })
+        .addFields({
+          count: {
+            $cond: [
+              {
+                $eq: ["$surveyName", "$result.suv"],
+              },
+              1,
+              0,
+            ],
+          },
+        })
+        .group({
+          _id: {
+            _id: "$_id",
+            surveyName: "$surveyName",
+            date: "$date",
+            surveyQuestion: "$surveyQuestion",
+            userName: "$userName",
+          },
+          total: {
+            $sum: "$count",
+          },
+        })
+        .match({
+          $expr: {
+            $eq: ["$total", 0],
+          },
+        })
+        .project({
+          _id: "$_id._id",
+          surveyName: "$_id.surveyName",
+          date: "$_id.date",
+          surveyQuestion: "$_id.surveyQuestion",
+          userName: "$_id.userName",
+        });
+
+      if (isNull(surveyList)) {
+        res.status(StatusCodes.BAD_REQUEST).send("model is not working");
+        return;
+      }
+      res.status(StatusCodes.OK).send(surveyList);
+      return;
+    } catch (error) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .send((error as Error).message);
+      return;
+    }
+  };
 }
 
 export default SurveyController;

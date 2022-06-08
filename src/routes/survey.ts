@@ -10,5 +10,6 @@ router.post("/survey", tokenValidator, survey.createSurvey);
 router.get("/getSurvey/:surveyId", tokenValidator, survey.getSurvey);
 router.get("/getAllSurveys", tokenValidator, survey.getAllSurvey);
 router.post("/attemptSurvey", tokenValidator, survey.attemptSurvey);
+router.get("/getSurveys", tokenValidator, survey.getSurveyForAttempt);
 
 export default router;
