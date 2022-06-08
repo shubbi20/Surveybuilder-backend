@@ -302,6 +302,87 @@ class SurveyController {
       return;
     }
   };
+
+  getSurveyForUserId = async (req: any, res: Response, next: NextFunction) => {
+    try {
+      const UserId: string = req.decodedToken.username;
+      const user = await userModel.find({ username: UserId });
+      if (isNull(user)) {
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .send("user with specified id doesn't exist");
+        return;
+      }
+
+      const surveys = await surveyModel.find({ userName: UserId });
+
+      if (isNull(surveys)) {
+        res.status(StatusCodes.BAD_REQUEST).send("model is not working");
+        return;
+      }
+      res.status(StatusCodes.OK).send(surveys);
+      return;
+    } catch (error) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .send((error as Error).message);
+      return;
+    }
+  };
+
+  deleteSurvey = async (req: any, res: Response, next: NextFunction) => {
+    try {
+      const UserId: string = req.decodedToken.username;
+      const user = await userModel.find({ username: UserId });
+      if (isNull(user)) {
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .send("user with specified id doesn't exist");
+        return;
+      }
+      const surveyId = req.body.surveyId;
+      const surveys = await surveyModel.findByIdAndDelete(surveyId);
+
+      if (isNull(surveys)) {
+        res.status(StatusCodes.BAD_REQUEST).send("problem at deletion");
+        return;
+      }
+      res.status(StatusCodes.OK).send(surveys);
+      return;
+    } catch (error) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .send((error as Error).message);
+      return;
+    }
+  };
+
+  getSurveyResponse = async (req: any, res: Response, next: NextFunction) => {
+    try {
+      const UserId: string = req.decodedToken.username;
+      const user = await userModel.find({ username: UserId });
+      if (isNull(user)) {
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .send("user with specified id doesn't exist");
+        return;
+      }
+      const surveyName = req.params.surveyName;
+      const surveys = await surveyAttemptModel.find({ surveyId: surveyName });
+
+      if (isNull(surveys)) {
+        res.status(StatusCodes.BAD_REQUEST).send("data fetch failed");
+        return;
+      }
+      res.status(StatusCodes.OK).send(surveys);
+      return;
+    } catch (error) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .send((error as Error).message);
+      return;
+    }
+  };
 }
 
 export default SurveyController;

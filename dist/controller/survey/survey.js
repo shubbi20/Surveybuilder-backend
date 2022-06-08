@@ -290,6 +290,83 @@ class SurveyController {
                 return;
             }
         };
+        this.getSurveyForUserId = async (req, res, next) => {
+            try {
+                const UserId = req.decodedToken.username;
+                const user = await user_1.default.find({ username: UserId });
+                if ((0, lodash_1.isNull)(user)) {
+                    res
+                        .status(http_status_codes_1.StatusCodes.NOT_FOUND)
+                        .send("user with specified id doesn't exist");
+                    return;
+                }
+                const surveys = await survey_1.default.find({ userName: UserId });
+                if ((0, lodash_1.isNull)(surveys)) {
+                    res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).send("model is not working");
+                    return;
+                }
+                res.status(http_status_codes_1.StatusCodes.OK).send(surveys);
+                return;
+            }
+            catch (error) {
+                res
+                    .status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR)
+                    .send(error.message);
+                return;
+            }
+        };
+        this.deleteSurvey = async (req, res, next) => {
+            try {
+                const UserId = req.decodedToken.username;
+                const user = await user_1.default.find({ username: UserId });
+                if ((0, lodash_1.isNull)(user)) {
+                    res
+                        .status(http_status_codes_1.StatusCodes.NOT_FOUND)
+                        .send("user with specified id doesn't exist");
+                    return;
+                }
+                const surveyId = req.body.surveyId;
+                const surveys = await survey_1.default.findByIdAndDelete(surveyId);
+                if ((0, lodash_1.isNull)(surveys)) {
+                    res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).send("problem at deletion");
+                    return;
+                }
+                res.status(http_status_codes_1.StatusCodes.OK).send(surveys);
+                return;
+            }
+            catch (error) {
+                res
+                    .status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR)
+                    .send(error.message);
+                return;
+            }
+        };
+        this.getSurveyResponse = async (req, res, next) => {
+            try {
+                const UserId = req.decodedToken.username;
+                const user = await user_1.default.find({ username: UserId });
+                if ((0, lodash_1.isNull)(user)) {
+                    res
+                        .status(http_status_codes_1.StatusCodes.NOT_FOUND)
+                        .send("user with specified id doesn't exist");
+                    return;
+                }
+                const surveyName = req.params.surveyName;
+                const surveys = await attemptSurvey_1.default.find({ surveyId: surveyName });
+                if ((0, lodash_1.isNull)(surveys)) {
+                    res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).send("data fetch failed");
+                    return;
+                }
+                res.status(http_status_codes_1.StatusCodes.OK).send(surveys);
+                return;
+            }
+            catch (error) {
+                res
+                    .status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR)
+                    .send(error.message);
+                return;
+            }
+        };
     }
 }
 exports.default = SurveyController;

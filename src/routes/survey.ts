@@ -11,5 +11,12 @@ router.get("/getSurvey/:surveyId", tokenValidator, survey.getSurvey);
 router.get("/getAllSurveys", tokenValidator, survey.getAllSurvey);
 router.post("/attemptSurvey", tokenValidator, survey.attemptSurvey);
 router.get("/getSurveys", tokenValidator, survey.getSurveyForAttempt);
+router.get("/getUserSurveys", tokenValidator, survey.getSurveyForUserId);
+router.delete("/deleteSurvey", tokenValidator, survey.deleteSurvey);
+router.get(
+  "/getSurveyResponse/:surveyName",
+  tokenValidator,
+  survey.getSurveyResponse
+);
 
 export default router;
