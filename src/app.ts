@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import router from "./routes/survey";
 import AuthRouter from "./routes/auth";
 
-const port = 3009;
+const port = process.env.PORT || 3009;
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_NAME = process.env.DB_NAME;
