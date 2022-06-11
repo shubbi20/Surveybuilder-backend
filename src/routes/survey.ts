@@ -5,7 +5,7 @@ import SurveyController from "../controller/survey/survey";
 import tokenValidator from "../middleware/decodeToken";
 
 const survey = new SurveyController();
-
+//random checking
 router.post("/survey", tokenValidator, survey.createSurvey);
 router.get("/getSurvey/:surveyId", tokenValidator, survey.getSurvey);
 router.get("/getAllSurveys", tokenValidator, survey.getAllSurvey);
